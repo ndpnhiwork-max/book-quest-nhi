@@ -1,0 +1,10 @@
+{
+  "name":"Book Quest | Nhi's Reading Adventure",
+  "short_name":"Book Quest",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#8bd4ff",
+  "theme_color":"#8bd4ff",
+  "description":"A cozy pixel reading adventure for Nhi.",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

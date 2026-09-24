@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#8bd4ff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Book Quest" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Book Quest — Nhi's Reading Adventure</title>
+  <style>
+    :root{
+      --ink:#253047;--ink2:#172035;--cream:#fff8dc;--paper:#fffdf0;--sky:#8bd4ff;--sky2:#cfefff;
+      --grass:#78cb62;--grass2:#49a64f;--soil:#9b633a;--soil2:#70472d;--gold:#ffd761;--gold2:#f0b63c;
+      --pink:#ff8f9e;--pink2:#e86a7b;--blue:#75a8ef;--blue2:#4f7bc4;--lav:#b9a8ef;--mint:#a9e3bd;
+      --shadow:#253047;--red:#e65e5e;--red2:#bd4242;--panel:#fff7cf;--white:#fff;
+      --px:4px;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--sky)}
+    body{margin:0;min-height:100vh;color:var(--ink);font-family:"Courier New",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;line-height:1.45;background:linear-gradient(var(--sky) 0 44%,var(--sky2) 44% 56%,#d9f1cf 56% 100%);image-rendering:pixelated}
+    button,input{font:inherit;color:inherit}
+    button{touch-action:manipulation}
+    .app{width:min(100%,820px);margin:0 auto;padding:18px 16px 116px}
+    .pixel{border:var(--px) solid var(--shadow);border-radius:3px;box-shadow:5px 5px 0 var(--shadow)}
+    .panel{background:var(--paper)}
+    .screen{display:none}.screen.active{display:block}
+    .eyebrow{font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#58617a}
+    .muted{color:#68718a}.small{font-size:13px}.micro{font-size:11px}
+    h1,h2,h3,p{margin-top:0}h1{font-size:clamp(28px,7vw,44px);line-height:1;margin-bottom:7px;letter-spacing:1px}h2{font-size:22px;line-height:1.15}h3{font-size:17px}
+
+    /* HERO */
+    .hero{position:relative;overflow:hidden;padding:18px;background:#fff4b6;margin-bottom:18px}
+    .hero-grid{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:center;position:relative;z-index:3}
+    .avatar-wrap{display:grid;place-items:center}
+    .avatar{position:relative;width:76px;height:84px;filter:drop-shadow(4px 4px 0 var(--shadow))}
+    .av-hair{position:absolute;left:14px;top:2px;width:48px;height:28px;background:#4b3027;border:4px solid var(--ink2);box-shadow:-8px 8px 0 #4b3027,8px 8px 0 #4b3027}
+    .av-face{position:absolute;left:18px;top:22px;width:40px;height:36px;background:#ffd0a8;border:4px solid var(--ink2)}
+    .av-face:before{content:"";position:absolute;left:7px;top:11px;width:5px;height:5px;background:var(--ink2);box-shadow:17px 0 0 var(--ink2),8px 12px 0 #dd6a6a}
+    .av-body{position:absolute;left:10px;top:56px;width:56px;height:26px;background:var(--pink);border:4px solid var(--ink2)}
+    .av-book{position:absolute;right:-4px;bottom:-2px;width:28px;height:22px;background:#ef5c56;border:4px solid var(--ink2)}
+    .av-book:after{content:"";position:absolute;left:10px;top:0;height:14px;border-left:3px solid #fff0cb}
+    .hero-stats{min-width:0}.level-line{font-weight:900;font-size:15px;margin-bottom:8px}
+    .xp-track{height:22px;background:#fff;border:4px solid var(--shadow);overflow:hidden;position:relative}
+    .xp-fill{height:100%;width:0;background:repeating-linear-gradient(90deg,var(--gold) 0 18px,var(--gold2) 18px 22px);transition:width .4s steps(8,end)}
+    .xp-meta{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:7px;font-size:13px;font-weight:900;flex-wrap:wrap}
+    .coin{display:inline-block;width:18px;height:18px;border:3px solid #7c5422;border-radius:50%;background:var(--gold);box-shadow:inset 3px 0 #fff2a4;vertical-align:-4px}
+    .cloud{position:absolute;background:white;border:4px solid var(--shadow);width:56px;height:20px;z-index:1;opacity:.95}.cloud:before,.cloud:after{content:"";position:absolute;background:white;border:4px solid var(--shadow)}.cloud:before{width:22px;height:20px;left:6px;top:-15px}.cloud:after{width:18px;height:16px;right:7px;top:-11px}.c1{right:24px;top:17px}.c2{left:-18px;bottom:18px;transform:scale(.8)}
+
+    /* WORLD MAP */
+    .section-label{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:22px 2px 10px}.section-label h2{margin:0}.section-label span{font-size:12px;font-weight:900;color:#66708c;text-align:right}
+    .world-map{position:relative;overflow:hidden;min-height:200px;background:linear-gradient(#8dd6ff 0 56%,#b9e7ff 56% 64%,#84cf6a 64% 100%)}
+    .mountains{position:absolute;left:0;right:0;bottom:70px;height:70px;opacity:.7;background:linear-gradient(135deg,transparent 0 24%,#9dc2d3 24% 50%,transparent 50%) 0 0/120px 70px repeat-x}
+    .pathline{position:absolute;left:8%;right:8%;bottom:54px;height:8px;background:#fff3bf;border:3px solid var(--shadow)}
+    .checkpoint{position:absolute;bottom:43px;width:28px;height:28px;border-radius:50%;border:4px solid var(--shadow);background:#fff;z-index:2}.checkpoint.done{background:var(--gold)}.checkpoint.now{background:var(--pink);animation:bob .9s steps(2,end) infinite}.checkpoint:nth-of-type(1){left:8%}.checkpoint:nth-of-type(2){left:27%}.checkpoint:nth-of-type(3){left:46%}.checkpoint:nth-of-type(4){left:65%}.checkpoint:nth-of-type(5){left:84%}
+    .tiny-hero{position:absolute;left:10%;bottom:72px;width:22px;height:29px;background:#ffcfaa;border:3px solid var(--shadow);z-index:3;transition:left .5s steps(6,end)}.tiny-hero:before{content:"";position:absolute;left:-3px;top:-8px;width:22px;height:10px;background:#4b3027;border:3px solid var(--shadow)}.tiny-hero:after{content:"";position:absolute;left:2px;bottom:-10px;width:8px;height:10px;background:var(--pink);border:3px solid var(--shadow);box-shadow:11px 0 0 var(--pink),11px 0 0 3px var(--shadow)}
+    .tree{position:absolute;right:26px;bottom:4px;width:20px;height:64px;background:var(--soil);border:4px solid var(--shadow)}.tree:before{content:"";position:absolute;width:64px;height:52px;left:-25px;top:-38px;background:#55b654;border:4px solid var(--shadow);box-shadow:12px -15px 0 #74cb66,-12px -9px 0 #69c35e}
+    .ground{position:absolute;left:0;right:0;bottom:0;height:42px;background:repeating-linear-gradient(90deg,var(--soil) 0 28px,var(--soil2) 28px 33px);border-top:4px solid var(--shadow)}
+    @keyframes bob{50%{transform:translateY(-5px)}}
+
+    /* WORLDS */
+    .worlds{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .world-card{position:relative;overflow:hidden;text-align:left;padding:0;background:var(--paper);min-height:230px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+    .world-card.active{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--shadow)}
+    .world-art{height:108px;border-bottom:4px solid var(--shadow);position:relative;overflow:hidden}
+    .world-art.sapiens{background:linear-gradient(#e8ad79 0 58%,#b76f45 58% 100%)}
+    .sun{position:absolute;width:34px;height:34px;background:#ffd76a;border:4px solid var(--shadow);right:18px;top:14px}
+    .cave{position:absolute;left:18px;bottom:0;width:92px;height:60px;background:#6b4634;border:4px solid var(--shadow);clip-path:polygon(0 100%,0 42%,20% 18%,42% 0,70% 12%,100% 50%,100% 100%)}
+    .cave-hole{position:absolute;left:49px;bottom:0;width:34px;height:42px;background:#2d292d;border:4px solid var(--shadow);border-bottom:0}
+    .fire{position:absolute;right:55px;bottom:10px;width:18px;height:24px;background:#ffbf4d;border:4px solid var(--shadow);clip-path:polygon(50% 0,100% 45%,76% 100%,20% 100%,0 48%)}
+    .world-art.ggs{background:linear-gradient(#9bd9ff 0 48%,#caeca2 48% 100%)}
+    .farm{position:absolute;left:0;right:0;bottom:0;height:46px;background:repeating-linear-gradient(90deg,#a4d569 0 18px,#7fba58 18px 22px)}
+    .house{position:absolute;left:20px;bottom:34px;width:48px;height:42px;background:#ffe6a1;border:4px solid var(--shadow)}.house:before{content:"";position:absolute;left:-8px;top:-28px;width:56px;height:32px;background:#d66c5f;border:4px solid var(--shadow);clip-path:polygon(50% 0,100% 100%,0 100%)}
+    .tower{position:absolute;right:24px;bottom:34px;width:38px;height:58px;background:#a2b5c9;border:4px solid var(--shadow)}.tower:before{content:"";position:absolute;left:-4px;top:-14px;width:38px;height:16px;background:#8399b3;border:4px solid var(--shadow)}
+    .world-body{padding:14px}.world-kicker{font-weight:900;font-size:12px;letter-spacing:1px;color:#6b7287}.world-name{font-size:19px;font-weight:900;margin:3px 0}.world-author{font-size:13px;color:#70788e}.world-progress-text{margin-top:10px;font-size:13px;font-weight:900}.bar{height:15px;border:3px solid var(--shadow);background:#fff;margin-top:6px}.bar span{display:block;height:100%;background:var(--mint);width:0;transition:width .35s steps(10,end)}
+
+    /* controls */
+    .action-panel{padding:16px;margin-top:16px}.select-line{font-weight:900;font-size:15px;margin-bottom:12px}.input-row{display:grid;grid-template-columns:1fr 120px;gap:10px}.input-row input{min-width:0;border:4px solid var(--shadow);background:#fff;padding:13px 12px;font-size:17px;min-height:52px}.btn{border:4px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);background:#fff;padding:12px 14px;min-height:52px;font-weight:900;cursor:pointer}.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--shadow)}.btn.primary{background:var(--blue);color:#fff}.btn.gold{background:var(--gold)}.btn.pink{background:var(--pink);color:#fff}.btn.red{background:var(--red);color:#fff}.btn.ghost{background:#fff}
+    .continue-row{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+    /* quests */
+    .quest-board{background:#fff2b9;padding:16px}.quest-header{display:flex;justify-content:space-between;gap:14px;align-items:start;margin-bottom:10px}.quest-header h2{margin:0}.no-pressure{font-size:11px;font-weight:900;border:3px solid var(--shadow);background:#fff;padding:4px 7px;white-space:nowrap}
+    .quest-card{width:100%;text-align:left;margin-top:11px;background:#fff;padding:14px;border:4px solid var(--shadow);box-shadow:4px 4px 0 var(--shadow);cursor:pointer;display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;min-height:82px}.quest-card.done{background:#d9efd0;opacity:.72}.quest-card.done .q-title{text-decoration:line-through}.q-icon{font-size:28px;text-align:center}.q-title{font-size:16px;font-weight:900}.q-desc{font-size:12px;color:#697087;margin-top:3px}.xp-chip{font-weight:900;font-size:12px;background:var(--gold);border:3px solid var(--shadow);padding:6px;white-space:nowrap}
+    .boss-zone{margin-top:18px;background:#eadfff;padding:16px;position:relative;overflow:hidden}.boss-door{width:116px;height:116px;margin:10px auto 16px;background:#564b78;border:5px solid var(--shadow);position:relative;box-shadow:inset 0 -18px #40375d}.boss-door:before{content:"";position:absolute;left:19px;top:21px;width:68px;height:85px;background:#241f38;border:5px solid var(--shadow)}.boss-door:after{content:"";position:absolute;right:28px;top:66px;width:9px;height:9px;background:var(--gold);border:3px solid var(--shadow)}.boss-card{display:none;margin-top:14px;background:#fff;padding:14px;border:4px dashed var(--shadow);font-weight:700}.boss-card.show{display:block}
+
+    /* achievements */
+    .badge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.badge{padding:14px;background:#ececf2;filter:grayscale(1);opacity:.55;min-height:126px}.badge.unlocked{background:#fff5ad;filter:none;opacity:1}.badge-emoji{font-size:32px}.badge-name{font-size:14px;font-weight:900;margin:5px 0}.badge-desc{font-size:11px;color:#68718a}
+
+    /* save */
+    .save-box{padding:16px}.save-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.notice{margin-top:14px;padding:12px;background:#e8f5ff;border:3px solid var(--shadow);font-size:12px}
+
+    /* nav */
+    nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#fff7d8;border-top:4px solid var(--shadow);padding-bottom:max(0px,env(safe-area-inset-bottom))}.nav-inner{width:min(100%,820px);margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}nav button{min-height:74px;border:0;border-right:2px solid #d9cfaa;background:transparent;font-size:11px;font-weight:900;cursor:pointer}nav button:last-child{border-right:0}nav button.active{background:#ffe781}.nav-ico{display:block;font-size:24px;margin-bottom:2px}
+
+    /* feedback */
+    .toast{position:fixed;left:50%;bottom:98px;transform:translateX(-50%);z-index:50;display:none;max-width:calc(100% - 28px);background:var(--ink2);color:#fff;border:4px solid #fff;padding:12px 15px;font-weight:900;text-align:center;box-shadow:5px 5px 0 var(--shadow)}.toast.show{display:block}.coin-pop{position:fixed;z-index:60;width:22px;height:22px;border-radius:50%;border:3px solid #7c5422;background:var(--gold);pointer-events:none;animation:coinpop .75s steps(6,end) forwards}@keyframes coinpop{0%{transform:translate(0,0) scale(.5);opacity:0}25%{opacity:1}100%{transform:translate(var(--dx),-95px) scale(1.15);opacity:0}}
+
+    @media(max-width:620px){
+      body{font-size:17px}.app{padding:12px 12px 112px}.hero{padding:15px}.hero-grid{grid-template-columns:78px 1fr;gap:12px}.avatar{transform:scale(.9);transform-origin:center}.worlds{grid-template-columns:1fr}.world-card{min-height:0}.world-art{height:120px}.world-name{font-size:20px}.quest-card{grid-template-columns:44px 1fr;gap:10px}.xp-chip{grid-column:2;justify-self:start}.badge-grid{grid-template-columns:1fr 1fr}.input-row{grid-template-columns:1fr}.continue-row,.save-actions{grid-template-columns:1fr}.world-map{min-height:180px}.section-label span{display:none}}
+    @media(max-width:390px){h1{font-size:28px}.hero-grid{grid-template-columns:66px 1fr}.avatar{transform:scale(.78)}.badge-grid{grid-template-columns:1fr}.quest-card{padding:12px}.q-title{font-size:15px}}
+    @media(hover:hover) and (pointer:fine){.world-card:hover,.quest-card:hover,.btn:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--shadow)}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="hero pixel">
+    <div class="cloud c1"></div><div class="cloud c2"></div>
+    <div class="hero-grid">
+      <div class="avatar-wrap" aria-label="Nhân vật pixel của Nhi"><div class="avatar"><div class="av-hair"></div><div class="av-face"></div><div class="av-body"></div><div class="av-book"></div></div></div>
+      <div class="hero-stats">
+        <div class="eyebrow">PLAYER NHI · READING ADVENTURE</div>
+        <h1>BOOK QUEST</h1>
+        <div class="level-line" id="levelLabel">LV.1 · NGƯỜI VỪA MỞ SÁCH</div>
+        <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+        <div class="xp-meta"><span><i class="coin"></i> <span id="xpText">0 XP</span></span><span id="nextText">50 XP tới LV.2</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="section-label"><h2>🗺️ Adventure Map</h2><span>Mở sách là đã tiến 1 bước.</span></div>
+      <div class="world-map pixel" aria-label="Bản đồ Book Quest">
+        <div class="mountains"></div><div class="pathline"></div>
+        <div class="checkpoint now"></div><div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div><div class="checkpoint"></div>
+        <div class="tiny-hero" id="tinyHero"></div><div class="tree"></div><div class="ground"></div>
+      </div>
+
+      <div class="section-label"><h2>🌍 Chọn World</h2><span>2 campaign đã mở khóa</span></div>
+      <div class="worlds">
+        <button type="button" class="world-card pixel" data-book="sapiens">
+          <div class="world-art sapiens"><div class="sun"></div><div class="cave"></div><div class="cave-hole"></div><div class="fire"></div></div>
+          <div class="world-body"><div class="world-kicker">WORLD 1 · ORIGINS</div><div class="world-name">📕 SAPIENS</div><div class="world-author">Yuval Noah Harari</div><div class="world-progress-text" id="sapiensPage">Chưa bắt đầu</div><div class="bar"><span id="sapiensProgress"></span></div></div>
+        </button>
+        <button type="button" class="world-card pixel" data-book="ggs">
+          <div class="world-art ggs"><div class="farm"></div><div class="house"></div><div class="tower"></div></div>
+          <div class="world-body"><div class="world-kicker">WORLD 2 · CIVILIZATIONS</div><div class="world-name">📘 SÚNG, VI TRÙNG & THÉP</div><div class="world-author">Jared Diamond</div><div class="world-progress-text" id="ggsPage">Chưa bắt đầu</div><div class="bar"><span id="ggsProgress"></span></div></div>
+        </button>
+      </div>
+
+      <div class="action-panel panel pixel">
+        <div class="eyebrow">CURRENT CAMPAIGN</div>
+        <div class="select-line" id="activeBookLabel">Chọn một world ở trên để bắt đầu.</div>
+        <div class="input-row"><input id="pageInput" type="number" min="0" inputmode="numeric" placeholder="Trang hiện tại"><button class="btn gold" id="savePage">LƯU TRANG</button></div>
+        <div class="continue-row"><button class="btn primary" id="continueBtn">▶ CONTINUE READING</button><button class="btn ghost" id="quickQuestBtn">⚔ MỞ QUEST BOARD</button></div>
+      </div>
+    </section>
+
+    <section id="quests" class="screen">
+      <div class="quest-board pixel">
+        <div class="quest-header"><div><div class="eyebrow">TODAY'S ADVENTURE</div><h2>⚔️ Quest Board</h2><div class="small muted">Chỉ cần 1 main quest. Side quest là đồ nhặt thêm.</div></div><div class="no-pressure">NO PRESSURE ✓</div></div>
+        <button type="button" class="quest-card" data-key="read" data-xp="10"><div class="q-icon">📖</div><div><div class="q-title">Mở sách và đọc</div><div class="q-desc">5 phút cũng hoàn toàn tính.</div></div><div class="xp-chip">+10 XP</div></button>
+        <button type="button" class="quest-card" data-key="session" data-xp="10"><div class="q-icon">🧭</div><div><div class="q-title">Có một buổi đọc</div><div class="q-desc">Không cần đủ số trang hay đủ thời gian.</div></div><div class="xp-chip">+10 XP</div></button>
+        <button type="button" class="quest-card" data-key="insight" data-xp="5"><div class="q-icon">💡</div><div><div class="q-title">Bắt được một ý thú vị</div><div class="q-desc">Một dấu ! ngoài lề cũng đủ.</div></div><div class="xp-chip">+5 XP</div></button>
+        <button type="button" class="quest-card" data-key="question" data-xp="5"><div class="q-icon">❓</div><div><div class="q-title">Có một câu hỏi hay</div><div class="q-desc">Chưa cần tìm đáp án ngay.</div></div><div class="xp-chip">+5 XP</div></button>
+        <button type="button" class="quest-card" data-key="challenge" data-xp="10"><div class="q-icon">🤨</div><div><div class="q-title">“Tôi chưa tin tác giả lắm”</div><div class="q-desc">Phản biện được thưởng nhiều hơn đọc lướt 😏</div></div><div class="xp-chip">+10 XP</div></button>
+        <button type="button" class="quest-card" data-key="content" data-xp="10"><div class="q-icon">🎥</div><div><div class="q-title">Content Material</div><div class="q-desc">Tìm một ý đáng kể lại cho người khác.</div></div><div class="xp-chip">+10 XP</div></button>
+      </div>
+      <div class="boss-zone pixel">
+        <div class="eyebrow">BOSS GATE</div><h2>👹 Một con Boss đang ngủ...</h2><div class="small muted">Boss không hỏi thuộc bài. Nó chỉ muốn biết Nhi nghĩ gì.</div>
+        <div class="boss-door" aria-hidden="true"></div><button class="btn pink" id="bossBtn" style="width:100%">MỞ CỔNG BOSS</button><div class="boss-card" id="bossCard"></div>
+      </div>
+    </section>
+
+    <section id="achievements" class="screen">
+      <div class="section-label"><h2>🏆 Achievement Cabinet</h2><span>Một số badge vẫn đang bí mật 👀</span></div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </section>
+
+    <section id="save" class="screen">
+      <div class="save-box panel pixel">
+        <div class="eyebrow">SAVE ROOM</div><h2>💾 Giữ cuộc phiêu lưu an toàn</h2><p class="small muted">Hiện bản v2 lưu trên trình duyệt đang dùng. Export để backup hoặc chuyển save sang thiết bị khác.</p>
+        <div class="save-actions"><button class="btn primary" id="exportBtn">EXPORT SAVE</button><button class="btn gold" id="importBtn">IMPORT SAVE</button><input type="file" id="importFile" accept="application/json" hidden></div>
+        <button class="btn ghost" id="resetBtn" style="width:100%;margin-top:10px">REFRESH QUESTS HÔM NAY</button>
+        <div class="notice"><b>📱 Điện thoại:</b> mở link Book Quest bằng Safari → Share → Add to Home Screen để dùng như một app. Cloud sync giữa thiết bị chưa được nối ở bản này.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<nav><div class="nav-inner">
+  <button type="button" class="active" data-screen="home"><span class="nav-ico">🏠</span>HOME</button>
+  <button type="button" data-screen="quests"><span class="nav-ico">⚔️</span>QUEST</button>
+  <button type="button" data-screen="achievements"><span class="nav-ico">🏆</span>BADGES</button>
+  <button type="button" data-screen="save"><span class="nav-ico">💾</span>SAVE</button>
+</div></nav>
+
+<script>
+(() => {
+  const KEY='bookQuestNhi_v2';
+  const OLD_KEY='bookQuestNhi_v1';
+  const defaults={xp:0,activeBook:null,books:{sapiens:{page:0,total:498},ggs:{page:0,total:592}},doneQuests:{},achievements:[],bosses:0,lastPlayed:null};
+  const clone=o=>JSON.parse(JSON.stringify(o));
+  function load(){
+    try{
+      const v2=localStorage.getItem(KEY); if(v2) return {...clone(defaults),...JSON.parse(v2)};
+      const v1=localStorage.getItem(OLD_KEY); if(v1){ const migrated={...clone(defaults),...JSON.parse(v1)}; localStorage.setItem(KEY,JSON.stringify(migrated)); return migrated; }
+    }catch(e){}
+    return clone(defaults);
+  }
+  let state=load();
+  const badges=[
+    {id:'first',emoji:'🌱',name:'First Contact',desc:'Hoàn thành quest đọc đầu tiên'},
+    {id:'what',emoji:'💡',name:'Wait… WHAT?',desc:'Bắt được một insight thật sự'},
+    {id:'dontbuy',emoji:'🤨',name:"I Don’t Buy It",desc:'Phản biện một luận điểm'},
+    {id:'content',emoji:'🎥',name:'Content Material',desc:'Tìm được ý có thể kể lại'},
+    {id:'boss',emoji:'⚔️',name:'Boss Defeated',desc:'Thắng Boss đầu tiên'},
+    {id:'crossover',emoji:'🔗',name:'Crossover Episode',desc:'Hai cuốn chạm cùng một vấn đề'},
+    {id:'rabbit',emoji:'🕳️',name:'Rabbit Hole',desc:'Tự research thêm vì tò mò'},
+    {id:'source',emoji:'🔍',name:'Source Hunter',desc:'Chủ động kiểm tra bằng chứng'}
+  ];
+  const levelTable=[
+    {min:0,lv:1,name:'NGƯỜI VỪA MỞ SÁCH',next:50},
+    {min:50,lv:2,name:'KẺ SĂN INSIGHT',next:100},
+    {min:100,lv:3,name:'NGƯỜI ĐÀO LỊCH SỬ',next:200},
+    {min:200,lv:4,name:'THỢ SĂN LUẬN ĐIỂM',next:350},
+    {min:350,lv:5,name:'NHÀ THÁM HIỂM LOÀI NGƯỜI',next:500}
+  ];
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  function currentLevel(){let out=levelTable[0];for(const l of levelTable) if(state.xp>=l.min) out=l;return out}
+  function persist(){state.lastPlayed=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(state));render()}
+  function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),2200)}
+  function coins(origin){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const r=origin?.getBoundingClientRect?.()||{left:innerWidth/2,top:innerHeight/2,width:0};for(let i=0;i<7;i++){const c=document.createElement('i');c.className='coin-pop';c.style.left=(r.left+r.width/2-11)+'px';c.style.top=(r.top+6)+'px';c.style.setProperty('--dx',((i-3)*16)+'px');document.body.appendChild(c);setTimeout(()=>c.remove(),850)}}
+  function unlock(id){if(!state.achievements.includes(id)){state.achievements.push(id);const b=badges.find(x=>x.id===id);setTimeout(()=>toast('🏆 UNLOCKED: '+(b?.name||id)),50)}}
+  function bookLabel(id){return id==='sapiens'?'Sapiens':id==='ggs'?'Súng, Vi trùng & Thép':''}
+  function render(){
+    const l=currentLevel();
+    $('#levelLabel').textContent=`LV.${l.lv} · ${l.name}`;$('#xpText').textContent=`${state.xp} XP`;$('#nextText').textContent=state.xp<l.next?`${l.next-state.xp} XP tới LV.${l.lv+1}`:'LEVEL MAX';
+    const prev=l.min;const pct=Math.max(0,Math.min(100,((state.xp-prev)/(l.next-prev))*100));$('#xpFill').style.width=pct+'%';
+    for(const id of ['sapiens','ggs']){const b=state.books[id]||defaults.books[id];const p=Math.min(100,Math.max(0,b.page/b.total*100));$('#'+id+'Progress').style.width=p+'%';$('#'+id+'Page').textContent=b.page?`Trang ${b.page} · ${Math.round(p)}%`:'Chưa bắt đầu'}
+    $$('.world-card').forEach(el=>el.classList.toggle('active',el.dataset.book===state.activeBook));
+    $('#activeBookLabel').textContent=state.activeBook?`Đang chơi: ${bookLabel(state.activeBook)}`:'Chọn một world ở trên để bắt đầu.';
+    $$('.quest-card').forEach(q=>q.classList.toggle('done',!!state.doneQuests[q.dataset.key]));
+    const grid=$('#badgeGrid');grid.innerHTML='';for(const b of badges){const on=state.achievements.includes(b.id);const d=document.createElement('div');d.className='badge pixel '+(on?'unlocked':'');d.innerHTML=`<div class="badge-emoji">${on?b.emoji:'❔'}</div><div class="badge-name">${on?b.name:'???'}</div><div class="badge-desc">${on?b.desc:'Achievement bí mật'}</div>`;grid.appendChild(d)}
+    const bookPages=Math.max(state.books.sapiens.page/(state.books.sapiens.total||1),state.books.ggs.page/(state.books.ggs.total||1));
+    const mapPct=Math.max(0,Math.min(1,bookPages));$('#tinyHero').style.left=(10+mapPct*72)+'%';
+    $$('.checkpoint').forEach((n,i)=>{n.classList.remove('now','done');const threshold=i/4;if(mapPct>threshold+.03)n.classList.add('done');else if(Math.abs(mapPct-threshold)<.25&&!$$('.checkpoint').some(x=>x.classList.contains('now')))n.classList.add('now')});
+  }
+  function openScreen(id){$$('.screen').forEach(s=>s.classList.toggle('active',s.id===id));$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));scrollTo({top:0,behavior:'smooth'})}
+  $$('.world-card').forEach(b=>b.addEventListener('click',()=>{state.activeBook=b.dataset.book;persist();toast('🌍 WORLD SELECTED: '+bookLabel(state.activeBook))}));
+  $('#savePage').addEventListener('click',e=>{if(!state.activeBook)return toast('Chọn một world trước nha :))');const n=Math.max(0,Math.floor(Number($('#pageInput').value)||0));state.books[state.activeBook].page=n;persist();coins(e.currentTarget);toast('📍 Đã lưu trang '+n)});
+  $('#continueBtn').addEventListener('click',()=>{if(!state.activeBook)return toast('Chọn world trước nha 😌');openScreen('quests');toast('▶ '+bookLabel(state.activeBook)+' — tiếp tục cuộc phiêu lưu!')});
+  $('#quickQuestBtn').addEventListener('click',()=>openScreen('quests'));
+  $$('.quest-card').forEach(q=>q.addEventListener('click',e=>{const k=q.dataset.key;if(state.doneQuests[k])return toast('Quest này hôm nay đã ăn XP rồi 😏');state.doneQuests[k]=true;state.xp+=Number(q.dataset.xp)||0;if(k==='read')unlock('first');if(k==='insight')unlock('what');if(k==='challenge')unlock('dontbuy');if(k==='content')unlock('content');persist();coins(e.currentTarget);toast('✨ QUEST COMPLETE · +'+q.dataset.xp+' XP')}));
+  const bossPrompts=['Nếu kể phần vừa đọc cho một người bạn trong 30 giây, Nhi sẽ kể gì?','Có điều gì tác giả nói mà Nhi chưa hoàn toàn tin? Vì sao?','Ý nào vừa đọc khiến Nhi kiểu “ủa khoan???” nhất?','Nếu làm video 1 phút từ phần vừa đọc, Nhi chọn ý nào?','Có ý nào làm Nhi thay đổi cách nhìn một vấn đề?'];
+  $('#bossBtn').addEventListener('click',()=>{const c=$('#bossCard');c.innerHTML=`<div class="eyebrow">BOSS QUESTION</div><div style="font-size:16px;margin:6px 0 12px">${bossPrompts[Math.floor(Math.random()*bossPrompts.length)]}</div><button type="button" class="btn pink" id="defeatBoss" style="width:100%">⚔ BOSS DEFEATED · +20 XP</button>`;c.classList.add('show');$('#defeatBoss').addEventListener('click',e=>{state.xp+=20;state.bosses++;unlock('boss');persist();coins(e.currentTarget);c.classList.remove('show');toast('⚔️ BOSS DEFEATED · +20 XP')},{once:true})});
+  $$('nav button').forEach(b=>b.addEventListener('click',()=>openScreen(b.dataset.screen)));
+  $('#resetBtn').addEventListener('click',()=>{state.doneQuests={};persist();toast('✨ Quest Board đã refresh')});
+  $('#exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='book-quest-save-v2.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+  $('#importBtn').addEventListener('click',()=>$('#importFile').click());
+  $('#importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const obj=JSON.parse(await f.text());state={...clone(defaults),...obj,books:{...clone(defaults.books),...(obj.books||{})}};persist();toast('💾 SAVE IMPORTED ✓')}catch(err){toast('File save không hợp lệ')}});
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  render();
+})();
+</script>
+</body>
+</html>
